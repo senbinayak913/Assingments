@@ -1,0 +1,144 @@
+Terminal 1
+
+[oracle@localhost ~]$ . oraenv
+ORACLE_SID = [oracle] ? prod
+The Oracle base has been set to /u01/app/oracle
+[oracle@localhost ~]$ netmgr
+[oracle@localhost ~]$ netmgr
+[oracle@localhost ~]$ netmgr
+[oracle@localhost ~]$ lsnrctl start listener1
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 01-DEC-2025 21:29:29
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Starting /u01/app/oracle/product/19.0.0/dbhome_1/bin/tnslsnr: please wait...
+
+TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+System parameter file is /u01/app/oracle/product/19.0.0/dbhome_1/network/admin/listener.ora
+Log messages written to /u01/app/oracle/diag/tnslsnr/localhost/listener1/alert/log.xml
+Listening on: (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=192.168.29.48)(PORT=1721)))
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.29.48)(PORT=1721)))
+STATUS of the LISTENER
+------------------------
+Alias                     listener1
+Version                   TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+Start Date                01-DEC-2025 21:29:29
+Uptime                    0 days 0 hr. 0 min. 0 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Listener Parameter File   /u01/app/oracle/product/19.0.0/dbhome_1/network/admin/listener.ora
+Listener Log File         /u01/app/oracle/diag/tnslsnr/localhost/listener1/alert/log.xml
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=192.168.29.48)(PORT=1721)))
+Services Summary...
+Service "prod" has 1 instance(s).
+  Instance "prod", status UNKNOWN, has 1 handler(s) for this service...
+The command completed successfully
+[oracle@localhost ~]$ lsnrctl stop listener1
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 01-DEC-2025 21:36:22
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.29.48)(PORT=1721)))
+The command completed successfully
+[oracle@localhost ~]$ lsnrctl start listener1
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 01-DEC-2025 21:36:51
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Starting /u01/app/oracle/product/19.0.0/dbhome_1/bin/tnslsnr: please wait...
+
+TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+System parameter file is /u01/app/oracle/product/19.0.0/dbhome_1/network/admin/listener.ora
+Log messages written to /u01/app/oracle/diag/tnslsnr/localhost/listener1/alert/log.xml
+Listening on: (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=192.168.29.48)(PORT=1721)))
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.29.48)(PORT=1721)))
+STATUS of the LISTENER
+------------------------
+Alias                     listener1
+Version                   TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+Start Date                01-DEC-2025 21:36:51
+Uptime                    0 days 0 hr. 0 min. 0 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Listener Parameter File   /u01/app/oracle/product/19.0.0/dbhome_1/network/admin/listener.ora
+Listener Log File         /u01/app/oracle/diag/tnslsnr/localhost/listener1/alert/log.xml
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=192.168.29.48)(PORT=1721)))
+Services Summary...
+Service "prod" has 1 instance(s).
+  Instance "prod", status UNKNOWN, has 1 handler(s) for this service...
+The command completed successfully
+[oracle@localhost ~]$ lsnrctl status listener1
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 01-DEC-2025 21:37:48
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.29.48)(PORT=1721)))
+STATUS of the LISTENER
+------------------------
+Alias                     listener1
+Version                   TNSLSNR for Linux: Version 19.0.0.0.0 - Production
+Start Date                01-DEC-2025 21:36:51
+Uptime                    0 days 0 hr. 0 min. 56 sec
+Trace Level               off
+Security                  ON: Local OS Authentication
+SNMP                      OFF
+Listener Parameter File   /u01/app/oracle/product/19.0.0/dbhome_1/network/admin/listener.ora
+Listener Log File         /u01/app/oracle/diag/tnslsnr/localhost/listener1/alert/log.xml
+Listening Endpoints Summary...
+  (DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=192.168.29.48)(PORT=1721)))
+Services Summary...
+Service "prod" has 1 instance(s).
+  Instance "prod", status UNKNOWN, has 1 handler(s) for this service...
+The command completed successfully
+[oracle@localhost ~]$ lsnrctl reload listener1
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 01-DEC-2025 21:38:13
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.29.48)(PORT=1721)))
+The command completed successfully
+[oracle@localhost ~]$ ps -ef | grep tnslsnr
+oracle    5324     1  0 21:36 ?        00:00:00 /u01/app/oracle/product/19.0.0/dbhome_1/bin/tnslsnr listener1 -inherit
+oracle    5469  3362  0 21:38 pts/0    00:00:00 grep --color=auto tnslsnr
+[oracle@localhost ~]$ kill -9 5324
+[oracle@localhost ~]$ lsnrctl status listener1
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 01-DEC-2025 21:49:09
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.29.48)(PORT=1721)))
+TNS-12541: TNS:no listener
+ TNS-12560: TNS:protocol adapter error
+  TNS-00511: No listener
+   Linux Error: 111: Connection refused
+[oracle@localhost ~]$ lsnrctl status listener1
+
+LSNRCTL for Linux: Version 19.0.0.0.0 - Production on 01-DEC-2025 21:49:33
+
+Copyright (c) 1991, 2019, Oracle.  All rights reserved.
+
+Connecting to (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.29.48)(PORT=1721)))
+TNS-12541: TNS:no listener
+ TNS-12560: TNS:protocol adapter error
+  TNS-00511: No listener
+   Linux Error: 111: Connection refused
+[oracle@localhost ~]$ netmgr
+[oracle@localhost ~]$ 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Terminal 2
+
+
+L
