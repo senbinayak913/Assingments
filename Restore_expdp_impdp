@@ -1,0 +1,828 @@
+[oracle@localhost ~]$ . oraenv
+ORACLE_SID = [oracle] ? prod
+The Oracle base has been set to /u01/app/oracle
+[oracle@localhost ~]$ sqlplus sys as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Dec 4 16:31:44 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+Connected to an idle instance.
+
+SQL> startup
+ORACLE instance started.
+
+Total System Global Area 1493168352 bytes
+Fixed Size		    8896736 bytes
+Variable Size		  889192448 bytes
+Database Buffers	  587202560 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+Database opened.
+SQL> select name from v$datafile;
+
+NAME
+--------------------------------------------------------------------------------
+/u01/app/oracle/oradata/PROD/system01.dbf
+/u01/app/oracle/oradata/PROD/sysaux01.dbf
+/u01/app/oracle/oradata/PROD/undotbs01.dbf
+/u01/app/oracle/oradata/PROD/users01.dbf
+
+SQL> select name,open_mode from v$database;
+
+NAME	  OPEN_MODE
+--------- --------------------
+PROD	  READ WRITE
+
+SQL> shutdown immediate
+ORA-03113: end-of-file on communication channel
+Process ID: 3773
+Session ID: 1 Serial number: 3551
+
+
+SQL> shutdown abort
+ORA-24324: service handle not initialized
+ORA-01041: internal error. hostdef extension doesn't exist
+SQL> startup mount
+SP2-0642: SQL*Plus internal error state 2133, context 3114:0:0
+Unsafe to proceed
+ORA-03114: not connected to ORACLE
+
+
+SQL> exit
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+[oracle@localhost ~]$ . oraenv
+ORACLE_SID = [prod] ? prod
+The Oracle base remains unchanged with value /u01/app/oracle
+[oracle@localhost ~]$ sqlplus sys as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Dec 4 16:35:59 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+Connected to an idle instance.
+
+SQL> startup mount
+ORACLE instance started.
+
+Total System Global Area 1493168352 bytes
+Fixed Size		    8896736 bytes
+Variable Size		  889192448 bytes
+Database Buffers	  587202560 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+SQL> !rman target/
+
+Recovery Manager: Release 19.0.0.0.0 - Production on Thu Dec 4 16:36:38 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+connected to target database: PROD (DBID=626857547, not open)
+
+RMAN> list backup summary;
+
+using target database control file instead of recovery catalog
+
+List of Backups
+===============
+Key     TY LV S Device Type Completion Time #Pieces #Copies Compressed Tag
+------- -- -- - ----------- --------------- ------- ------- ---------- ---
+43      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T101046
+44      B  A  A DISK        04-DEC-25       1       1       NO         TAG20251204T101053
+46      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T101526
+47      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T101534
+48      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T101606
+49      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T101609
+50      B  0  A DISK        04-DEC-25       1       1       NO         TAG20251204T103703
+51      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T103710
+52      B  1  A DISK        04-DEC-25       1       1       NO         TAG20251204T103822
+53      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T103826
+54      B  1  A DISK        04-DEC-25       1       1       NO         TAG20251204T103922
+55      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T103929
+56      B  F  A DISK        04-DEC-25       1       1       YES        TAG20251204T110928
+57      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T111004
+58      B  A  A DISK        04-DEC-25       1       1       YES        TAG20251204T111150
+59      B  F  A DISK        04-DEC-25       1       1       YES        TAG20251204T111151
+60      B  A  A DISK        04-DEC-25       1       1       YES        TAG20251204T111227
+61      B  F  A DISK        04-DEC-25       1       1       NO         TAG20251204T111229
+
+RMAN> list backup
+2> ;
+
+
+List of Backup Sets
+===================
+
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+43      Full    1.18G      DISK        00:00:06     04-DEC-25      
+        BP Key: 47   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T101046
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T101046_nm246gtk_.bkp
+  List of Datafiles in backup set 43
+  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name
+  ---- -- ---- ---------- --------- ----------- ------ ----
+  1       Full 3262876    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/system01.dbf
+  3       Full 3262876    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/sysaux01.dbf
+  4       Full 3262876    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/undotbs01.dbf
+  7       Full 3262876    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/users01.dbf
+
+BS Key  Size       Device Type Elapsed Time Completion Time
+------- ---------- ----------- ------------ ---------------
+44      7.50K      DISK        00:00:01     04-DEC-25      
+        BP Key: 48   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T101053
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_annnn_TAG20251204T101053_nm246p12_.bkp
+
+  List of Archived Logs in backup set 44
+  Thrd Seq     Low SCN    Low Time  Next SCN   Next Time
+  ---- ------- ---------- --------- ---------- ---------
+  1    4       3262857    04-DEC-25 3262884    04-DEC-25
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+46      Full    1.18G      DISK        00:00:05     04-DEC-25      
+        BP Key: 50   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T101526
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T101526_nm24h771_.bkp
+  List of Datafiles in backup set 46
+  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name
+  ---- -- ---- ---------- --------- ----------- ------ ----
+  1       Full 3263201    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/system01.dbf
+  3       Full 3263201    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/sysaux01.dbf
+  4       Full 3263201    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/undotbs01.dbf
+  7       Full 3263201    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/users01.dbf
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+47      Full    10.20M     DISK        00:00:00     04-DEC-25      
+        BP Key: 51   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T101534
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/autobackup/2025_12_04/o1_mf_s_1218967926_nm24hglt_.bkp
+  SPFILE Included: Modification time: 04-DEC-25
+  SPFILE db_unique_name: PROD
+  Control File Included: Ckp SCN: 3263201      Ckp time: 04-DEC-25
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+48      Full    10.17M     DISK        00:00:01     04-DEC-25      
+        BP Key: 52   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T101606
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_ncnnf_TAG20251204T101606_nm24jhxc_.bkp
+  Control File Included: Ckp SCN: 3263201      Ckp time: 04-DEC-25
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+49      Full    10.20M     DISK        00:00:00     04-DEC-25      
+        BP Key: 53   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T101609
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/autobackup/2025_12_04/o1_mf_s_1218967926_nm24jk8b_.bkp
+  SPFILE Included: Modification time: 04-DEC-25
+  SPFILE db_unique_name: PROD
+  Control File Included: Ckp SCN: 3263201      Ckp time: 04-DEC-25
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+50      Incr 0  1.18G      DISK        00:00:05     04-DEC-25      
+        BP Key: 54   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T103703
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnnd0_TAG20251204T103703_nm25qqmp_.bkp
+  List of Datafiles in backup set 50
+  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name
+  ---- -- ---- ---------- --------- ----------- ------ ----
+  1    0  Incr 3265532    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/system01.dbf
+  3    0  Incr 3265532    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/sysaux01.dbf
+  4    0  Incr 3265532    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/undotbs01.dbf
+  7    0  Incr 3265532    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/users01.dbf
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+51      Full    10.20M     DISK        00:00:01     04-DEC-25      
+        BP Key: 55   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T103710
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/autobackup/2025_12_04/o1_mf_s_1218969430_nm25qz3p_.bkp
+  SPFILE Included: Modification time: 04-DEC-25
+  SPFILE db_unique_name: PROD
+  Control File Included: Ckp SCN: 3265542      Ckp time: 04-DEC-25
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+52      Incr 1  96.00K     DISK        00:00:03     04-DEC-25      
+        BP Key: 56   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T103822
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnnd1_TAG20251204T103822_nm25t701_.bkp
+  List of Datafiles in backup set 52
+  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name
+  ---- -- ---- ---------- --------- ----------- ------ ----
+  1    1  Incr 3265592    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/system01.dbf
+  3    1  Incr 3265592    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/sysaux01.dbf
+  4    1  Incr 3265592    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/undotbs01.dbf
+  7    1  Incr 3265592    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/users01.dbf
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+53      Full    10.20M     DISK        00:00:00     04-DEC-25      
+        BP Key: 57   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T103826
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/autobackup/2025_12_04/o1_mf_s_1218969506_nm25tbcl_.bkp
+  SPFILE Included: Modification time: 04-DEC-25
+  SPFILE db_unique_name: PROD
+  Control File Included: Ckp SCN: 3265601      Ckp time: 04-DEC-25
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+54      Incr 1  96.00K     DISK        00:00:03     04-DEC-25      
+        BP Key: 58   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T103922
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnnd1_TAG20251204T103922_nm25w2gm_.bkp
+  List of Datafiles in backup set 54
+  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name
+  ---- -- ---- ---------- --------- ----------- ------ ----
+  1    1  Incr 3265646    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/system01.dbf
+  3    1  Incr 3265646    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/sysaux01.dbf
+  4    1  Incr 3265646    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/undotbs01.dbf
+  7    1  Incr 3265646    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/users01.dbf
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+55      Full    10.20M     DISK        00:00:00     04-DEC-25      
+        BP Key: 59   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T103929
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/autobackup/2025_12_04/o1_mf_s_1218969569_nm25w9xb_.bkp
+  SPFILE Included: Modification time: 04-DEC-25
+  SPFILE db_unique_name: PROD
+  Control File Included: Ckp SCN: 3265656      Ckp time: 04-DEC-25
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+56      Full    290.37M    DISK        00:00:33     04-DEC-25      
+        BP Key: 60   Status: AVAILABLE  Compressed: YES  Tag: TAG20251204T110928
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T110928_nm27nk96_.bkp
+  List of Datafiles in backup set 56
+  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name
+  ---- -- ---- ---------- --------- ----------- ------ ----
+  1       Full 3266743    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/system01.dbf
+  3       Full 3266743    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/sysaux01.dbf
+  4       Full 3266743    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/undotbs01.dbf
+  7       Full 3266743    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/users01.dbf
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+57      Full    10.20M     DISK        00:00:01     04-DEC-25      
+        BP Key: 61   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T111004
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/autobackup/2025_12_04/o1_mf_s_1218971404_nm27onyj_.bkp
+  SPFILE Included: Modification time: 04-DEC-25
+  SPFILE db_unique_name: PROD
+  Control File Included: Ckp SCN: 3266763      Ckp time: 04-DEC-25
+
+BS Key  Size       Device Type Elapsed Time Completion Time
+------- ---------- ----------- ------------ ---------------
+58      1.92M      DISK        00:00:00     04-DEC-25      
+        BP Key: 62   Status: AVAILABLE  Compressed: YES  Tag: TAG20251204T111150
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_annnn_TAG20251204T111150_nm27ryno_.bkp
+
+  List of Archived Logs in backup set 58
+  Thrd Seq     Low SCN    Low Time  Next SCN   Next Time
+  ---- ------- ---------- --------- ---------- ---------
+  1    4       3262857    04-DEC-25 3262884    04-DEC-25
+  1    5       3262884    04-DEC-25 3266828    04-DEC-25
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+59      Full    290.37M    DISK        00:00:34     04-DEC-25      
+        BP Key: 63   Status: AVAILABLE  Compressed: YES  Tag: TAG20251204T111151
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T111151_nm27s04j_.bkp
+  List of Datafiles in backup set 59
+  File LV Type Ckp SCN    Ckp Time  Abs Fuz SCN Sparse Name
+  ---- -- ---- ---------- --------- ----------- ------ ----
+  1       Full 3266840    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/system01.dbf
+  3       Full 3266840    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/sysaux01.dbf
+  4       Full 3266840    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/undotbs01.dbf
+  7       Full 3266840    04-DEC-25              NO    /u01/app/oracle/oradata/PROD/users01.dbf
+
+BS Key  Size       Device Type Elapsed Time Completion Time
+------- ---------- ----------- ------------ ---------------
+60      15.50K     DISK        00:00:00     04-DEC-25      
+        BP Key: 64   Status: AVAILABLE  Compressed: YES  Tag: TAG20251204T111227
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_annnn_TAG20251204T111227_nm27t3tl_.bkp
+
+  List of Archived Logs in backup set 60
+  Thrd Seq     Low SCN    Low Time  Next SCN   Next Time
+  ---- ------- ---------- --------- ---------- ---------
+  1    6       3266828    04-DEC-25 3266871    04-DEC-25
+
+BS Key  Type LV Size       Device Type Elapsed Time Completion Time
+------- ---- -- ---------- ----------- ------------ ---------------
+61      Full    10.20M     DISK        00:00:00     04-DEC-25      
+        BP Key: 65   Status: AVAILABLE  Compressed: NO  Tag: TAG20251204T111229
+        Piece Name: /u01/app/oracle/fast_recovery_area/PROD/autobackup/2025_12_04/o1_mf_s_1218971549_nm27t5gz_.bkp
+  SPFILE Included: Modification time: 04-DEC-25
+  SPFILE db_unique_name: PROD
+  Control File Included: Ckp SCN: 3266884      Ckp time: 04-DEC-25
+
+RMAN> restore system01.dbf
+
+RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-00558: error encountered while parsing input commands
+RMAN-01009: syntax error: found "identifier": expecting one of: "allforeign, application, archivelog, asdecrypted, asencrypted, backupset, channel, check, controlfile, database, database root, datafile, device, dump, farsync, file_name_convert, force, foreign, from, frompreplugin, from service, high, pluggable, preview, primary, section, skip preplugin, skip readonly, spfile, standby, tablespace, to restore point, until restore point, until, using, validate, ("
+RMAN-01008: the bad identifier was: system01
+RMAN-01007: at line 1 column 9 file: standard input
+
+RMAN> restore datafile 1;
+
+Starting restore at 04-DEC-25
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=45 device type=DISK
+
+channel ORA_DISK_1: starting datafile backup set restore
+channel ORA_DISK_1: specifying datafile(s) to restore from backup set
+channel ORA_DISK_1: restoring datafile 00001 to /u01/app/oracle/oradata/PROD/system01.dbf
+channel ORA_DISK_1: reading from backup piece /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T111151_nm27s04j_.bkp
+channel ORA_DISK_1: piece handle=/u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T111151_nm27s04j_.bkp tag=TAG20251204T111151
+channel ORA_DISK_1: restored backup piece 1
+channel ORA_DISK_1: restore complete, elapsed time: 00:00:46
+Finished restore at 04-DEC-25
+
+RMAN> recover database;
+
+Starting recover at 04-DEC-25
+using channel ORA_DISK_1
+
+starting media recovery
+media recovery complete, elapsed time: 00:00:01
+
+Finished recover at 04-DEC-25
+
+RMAN> alter database open;
+
+Statement processed
+
+RMAN> exit
+
+
+Recovery Manager complete.
+
+SQL> alter tablespace sysaux offline immediate;
+
+Tablespace altered.
+
+SQL> select tablespace_name ,status from dba_tablespaces;
+
+TABLESPACE_NAME 	       STATUS
+------------------------------ ---------
+SYSTEM			       ONLINE
+SYSAUX			       OFFLINE
+UNDOTBS1		       ONLINE
+TEMP			       ONLINE
+USERS			       ONLINE
+
+SQL> !rman target /
+
+Recovery Manager: Release 19.0.0.0.0 - Production on Thu Dec 4 16:48:38 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+connected to target database: PROD (DBID=626857547)
+
+RMAN> restore datafile 3;
+
+Starting restore at 04-DEC-25
+using target database control file instead of recovery catalog
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=70 device type=DISK
+
+channel ORA_DISK_1: starting datafile backup set restore
+channel ORA_DISK_1: specifying datafile(s) to restore from backup set
+channel ORA_DISK_1: restoring datafile 00003 to /u01/app/oracle/oradata/PROD/sysaux01.dbf
+channel ORA_DISK_1: reading from backup piece /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T111151_nm27s04j_.bkp
+channel ORA_DISK_1: piece handle=/u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T111151_nm27s04j_.bkp tag=TAG20251204T111151
+channel ORA_DISK_1: restored backup piece 1
+channel ORA_DISK_1: restore complete, elapsed time: 00:00:25
+Finished restore at 04-DEC-25
+
+RMAN> recover database;
+
+Starting recover at 04-DEC-25
+using channel ORA_DISK_1
+
+starting media recovery
+media recovery failed
+RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-03002: failure of recover command at 12/04/2025 16:50:13
+ORA-00283: recovery session canceled due to errors
+RMAN-11003: failure during parse/execution of SQL statement: alter database recover
+ if needed start
+ORA-00283: recovery session canceled due to errors
+ORA-01124: cannot recover data file 1 - file is in use or recovery
+ORA-01110: data file 1: '/u01/app/oracle/oradata/PROD/system01.dbf'
+
+RMAN> recover datafile 3
+2> ;
+
+Starting recover at 04-DEC-25
+using channel ORA_DISK_1
+
+starting media recovery
+
+archived log for thread 1 with sequence 6 is already on disk as file /u01/app/oracle/fast_recovery_area/PROD/archivelog/2025_12_04/o1_mf_1_6_nm27t3dx_.arc
+archived log for thread 1 with sequence 7 is already on disk as file /u01/app/oracle/fast_recovery_area/PROD/archivelog/2025_12_04/o1_mf_1_7_nm2tkcgy_.arc
+archived log for thread 1 with sequence 8 is already on disk as file /u01/app/oracle/fast_recovery_area/PROD/archivelog/2025_12_04/o1_mf_1_8_nm2v74wd_.arc
+archived log file name=/u01/app/oracle/fast_recovery_area/PROD/archivelog/2025_12_04/o1_mf_1_6_nm27t3dx_.arc thread=1 sequence=6
+media recovery complete, elapsed time: 00:00:02
+Finished recover at 04-DEC-25
+
+RMAN> exit
+
+
+Recovery Manager complete.
+
+SQL> alter tablespace sysaux online;
+
+Tablespace altered.
+
+SQL> alter tablespace users offline
+  2  ;
+
+Tablespace altered.
+
+SQL> rman target/
+SP2-0734: unknown command beginning "rman targe..." - rest of line ignored.
+SQL> !rman target/
+
+Recovery Manager: Release 19.0.0.0.0 - Production on Thu Dec 4 17:03:08 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+connected to target database: PROD (DBID=626857547)
+
+RMAN> restore datafile 7;
+
+Starting restore at 04-DEC-25
+using target database control file instead of recovery catalog
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=70 device type=DISK
+
+channel ORA_DISK_1: starting datafile backup set restore
+channel ORA_DISK_1: specifying datafile(s) to restore from backup set
+channel ORA_DISK_1: restoring datafile 00007 to /u01/app/oracle/oradata/PROD/users01.dbf
+channel ORA_DISK_1: reading from backup piece /u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T111151_nm27s04j_.bkp
+channel ORA_DISK_1: piece handle=/u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T111151_nm27s04j_.bkp tag=TAG20251204T111151
+channel ORA_DISK_1: restored backup piece 1
+channel ORA_DISK_1: restore complete, elapsed time: 00:00:01
+Finished restore at 04-DEC-25
+
+RMAN>  recover datafile 7;
+
+Starting recover at 04-DEC-25
+using channel ORA_DISK_1
+
+starting media recovery
+
+archived log for thread 1 with sequence 6 is already on disk as file /u01/app/oracle/fast_recovery_area/PROD/archivelog/2025_12_04/o1_mf_1_6_nm27t3dx_.arc
+archived log for thread 1 with sequence 7 is already on disk as file /u01/app/oracle/fast_recovery_area/PROD/archivelog/2025_12_04/o1_mf_1_7_nm2tkcgy_.arc
+archived log for thread 1 with sequence 8 is already on disk as file /u01/app/oracle/fast_recovery_area/PROD/archivelog/2025_12_04/o1_mf_1_8_nm2v74wd_.arc
+archived log file name=/u01/app/oracle/fast_recovery_area/PROD/archivelog/2025_12_04/o1_mf_1_6_nm27t3dx_.arc thread=1 sequence=6
+media recovery complete, elapsed time: 00:00:00
+Finished recover at 04-DEC-25
+
+RMAN> exit
+
+
+Recovery Manager complete.
+
+SQL> select tablespace_name ,status from dba_tablespaces;
+
+TABLESPACE_NAME 	       STATUS
+------------------------------ ---------
+SYSTEM			       ONLINE
+SYSAUX			       ONLINE
+UNDOTBS1		       ONLINE
+TEMP			       ONLINE
+USERS			       OFFLINE
+
+SQL> alter tablespace USERS online;
+
+Tablespace altered.
+
+SQL> select tablespace_name ,status from dba_tablespaces;
+
+TABLESPACE_NAME 	       STATUS
+------------------------------ ---------
+SYSTEM			       ONLINE
+SYSAUX			       ONLINE
+UNDOTBS1		       ONLINE
+TEMP			       ONLINE
+USERS			       ONLINE
+
+SQL> create tablespace demo datafile '/u01/app/oracle/oradata/PROD/demo01.dbf' size 10m;
+
+Tablespace created.
+
+SQL> !rman target/
+
+Recovery Manager: Release 19.0.0.0.0 - Production on Thu Dec 4 17:26:12 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+connected to target database: PROD (DBID=626857547)
+
+RMAN> RMAN> VALIDATE DATABASE;
+
+RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-00558: error encountered while parsing input commands
+RMAN-01006: error signaled during parse
+RMAN-02001: unrecognized punctuation symbol ">"
+
+RMAN> VALIDATE DATABASE;
+
+Starting validate at 04-DEC-25
+using target database control file instead of recovery catalog
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=75 device type=DISK
+channel ORA_DISK_1: starting validation of datafile
+channel ORA_DISK_1: specifying datafile(s) for validation
+input datafile file number=00001 name=/u01/app/oracle/oradata/PROD/system01.dbf
+input datafile file number=00003 name=/u01/app/oracle/oradata/PROD/sysaux01.dbf
+input datafile file number=00004 name=/u01/app/oracle/oradata/PROD/undotbs01.dbf
+input datafile file number=00005 name=/u01/app/oracle/oradata/PROD/demo01.dbf
+input datafile file number=00007 name=/u01/app/oracle/oradata/PROD/users01.dbf
+channel ORA_DISK_1: validation complete, elapsed time: 00:00:07
+List of Datafiles
+=================
+File Status Marked Corrupt Empty Blocks Blocks Examined High SCN
+---- ------ -------------- ------------ --------------- ----------
+1    OK     0              16726        116491          3574106   
+  File Name: /u01/app/oracle/oradata/PROD/system01.dbf
+  Block Type Blocks Failing Blocks Processed
+  ---------- -------------- ----------------
+  Data       0              80602           
+  Index      0              13051           
+  Other      0              6101            
+
+File Status Marked Corrupt Empty Blocks Blocks Examined High SCN
+---- ------ -------------- ------------ --------------- ----------
+3    OK     0              18603        72969           3574120   
+  File Name: /u01/app/oracle/oradata/PROD/sysaux01.dbf
+  Block Type Blocks Failing Blocks Processed
+  ---------- -------------- ----------------
+  Data       0              6764            
+  Index      0              4234            
+  Other      0              43359           
+
+File Status Marked Corrupt Empty Blocks Blocks Examined High SCN
+---- ------ -------------- ------------ --------------- ----------
+4    OK     0              1            44183           3574120   
+  File Name: /u01/app/oracle/oradata/PROD/undotbs01.dbf
+  Block Type Blocks Failing Blocks Processed
+  ---------- -------------- ----------------
+  Data       0              0               
+  Index      0              0               
+  Other      0              44159           
+
+File Status Marked Corrupt Empty Blocks Blocks Examined High SCN
+---- ------ -------------- ------------ --------------- ----------
+5    OK     0              1153         1280            3573923   
+  File Name: /u01/app/oracle/oradata/PROD/demo01.dbf
+  Block Type Blocks Failing Blocks Processed
+  ---------- -------------- ----------------
+  Data       0              0               
+  Index      0              0               
+  Other      0              127             
+
+File Status Marked Corrupt Empty Blocks Blocks Examined High SCN
+---- ------ -------------- ------------ --------------- ----------
+7    OK     0              69           641             2705693   
+  File Name: /u01/app/oracle/oradata/PROD/users01.dbf
+  Block Type Blocks Failing Blocks Processed
+  ---------- -------------- ----------------
+  Data       0              75              
+  Index      0              17              
+  Other      0              479             
+
+channel ORA_DISK_1: starting validation of datafile
+channel ORA_DISK_1: specifying datafile(s) for validation
+including current control file for validation
+including current SPFILE in backup set
+channel ORA_DISK_1: validation complete, elapsed time: 00:00:01
+List of Control File and SPFILE
+===============================
+File Type    Status Blocks Failing Blocks Examined
+------------ ------ -------------- ---------------
+SPFILE       OK     0              2               
+Control File OK     0              646             
+Finished validate at 04-DEC-25
+
+RMAN> RMAN> RECOVER CORRUPTION LIST;
+
+RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-00558: error encountered while parsing input commands
+RMAN-01006: error signaled during parse
+RMAN-02001: unrecognized punctuation symbol ">"
+
+RMAN> RECOVER CORRUPTION LIST;
+
+Starting recover at 04-DEC-25
+using channel ORA_DISK_1
+
+starting media recovery
+media recovery complete, elapsed time: 00:00:00
+
+Finished recover at 04-DEC-25
+
+RMAN> exit
+
+
+Recovery Manager complete.
+
+SQL> select name from v$datafile;
+
+NAME
+--------------------------------------------------------------------------------
+/u01/app/oracle/oradata/PROD/system01.dbf
+/u01/app/oracle/oradata/PROD/sysaux01.dbf
+/u01/app/oracle/oradata/PROD/undotbs01.dbf
+/u01/app/oracle/oradata/PROD/demo01.dbf
+/u01/app/oracle/oradata/PROD/users01.dbf
+
+SQL> !rman target/
+
+Recovery Manager: Release 19.0.0.0.0 - Production on Thu Dec 4 17:37:09 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+connected to target database: PROD (DBID=626857547)
+
+RMAN> backup database plus archivelog;
+
+
+Starting backup at 04-DEC-25
+current log archived
+using target database control file instead of recovery catalog
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=70 device type=DISK
+channel ORA_DISK_1: starting archived log backup set
+channel ORA_DISK_1: specifying archived log(s) in backup set
+input archived log thread=1 sequence=4 RECID=27 STAMP=1218967853
+input archived log thread=1 sequence=5 RECID=28 STAMP=1218971510
+input archived log thread=1 sequence=6 RECID=29 STAMP=1218971547
+input archived log thread=1 sequence=7 RECID=30 STAMP=1218990723
+input archived log thread=1 sequence=8 RECID=31 STAMP=1218991420
+input archived log thread=1 sequence=9 RECID=32 STAMP=1218994661
+channel ORA_DISK_1: starting piece 1 at 04-DEC-25
+channel ORA_DISK_1: finished piece 1 at 04-DEC-25
+piece handle=/u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_annnn_TAG20251204T173742_nm2ydg67_.bkp tag=TAG20251204T173742 comment=NONE
+channel ORA_DISK_1: backup set complete, elapsed time: 00:00:01
+Finished backup at 04-DEC-25
+
+Starting backup at 04-DEC-25
+using channel ORA_DISK_1
+channel ORA_DISK_1: starting full datafile backup set
+channel ORA_DISK_1: specifying datafile(s) in backup set
+input datafile file number=00001 name=/u01/app/oracle/oradata/PROD/system01.dbf
+input datafile file number=00003 name=/u01/app/oracle/oradata/PROD/sysaux01.dbf
+input datafile file number=00004 name=/u01/app/oracle/oradata/PROD/undotbs01.dbf
+input datafile file number=00005 name=/u01/app/oracle/oradata/PROD/demo01.dbf
+input datafile file number=00007 name=/u01/app/oracle/oradata/PROD/users01.dbf
+channel ORA_DISK_1: starting piece 1 at 04-DEC-25
+channel ORA_DISK_1: finished piece 1 at 04-DEC-25
+piece handle=/u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_nnndf_TAG20251204T173743_nm2ydho0_.bkp tag=TAG20251204T173743 comment=NONE
+channel ORA_DISK_1: backup set complete, elapsed time: 00:00:07
+Finished backup at 04-DEC-25
+
+Starting backup at 04-DEC-25
+current log archived
+using channel ORA_DISK_1
+channel ORA_DISK_1: starting archived log backup set
+channel ORA_DISK_1: specifying archived log(s) in backup set
+input archived log thread=1 sequence=10 RECID=33 STAMP=1218994670
+channel ORA_DISK_1: starting piece 1 at 04-DEC-25
+channel ORA_DISK_1: finished piece 1 at 04-DEC-25
+piece handle=/u01/app/oracle/fast_recovery_area/PROD/backupset/2025_12_04/o1_mf_annnn_TAG20251204T173751_nm2ydq4j_.bkp tag=TAG20251204T173751 comment=NONE
+channel ORA_DISK_1: backup set complete, elapsed time: 00:00:01
+Finished backup at 04-DEC-25
+
+Starting Control File and SPFILE Autobackup at 04-DEC-25
+piece handle=/u01/app/oracle/fast_recovery_area/PROD/autobackup/2025_12_04/o1_mf_s_1218994672_nm2ydrlv_.bkp comment=NONE
+Finished Control File and SPFILE Autobackup at 04-DEC-25
+
+RMAN> drop tablespace demo;
+
+Statement processed
+
+RMAN> exit
+
+
+Recovery Manager complete.
+
+SQL> select name from v$datafile;
+
+NAME
+--------------------------------------------------------------------------------
+/u01/app/oracle/oradata/PROD/system01.dbf
+/u01/app/oracle/oradata/PROD/sysaux01.dbf
+/u01/app/oracle/oradata/PROD/undotbs01.dbf
+/u01/app/oracle/oradata/PROD/users01.dbf
+
+SQL> !rman target/
+
+Recovery Manager: Release 19.0.0.0.0 - Production on Thu Dec 4 17:39:45 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+connected to target database: PROD (DBID=626857547)
+
+RMAN> RECOVER TABLESPACE demo UNTIL TIME 'SYSDATE-1';
+
+Starting recover at 04-DEC-25
+using target database control file instead of recovery catalog
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=82 device type=DISK
+RMAN-05026: warning: presuming following set of tablespaces applies to specified point-in-time
+
+List of tablespaces expected to have UNDO segments
+Tablespace SYSTEM
+Tablespace UNDOTBS1
+
+Creating automatic instance, with SID='uofh'
+
+initialization parameters used for automatic instance:
+db_name=PROD
+db_unique_name=uofh_pitr_PROD
+compatible=19.0.0
+db_block_size=8192
+db_files=200
+diagnostic_dest=/u01/app/oracle
+_system_trig_enabled=FALSE
+sga_target=1424M
+processes=200
+#No auxiliary destination in use
+#No auxiliary parameter file used
+
+
+starting up automatic instance PROD
+
+Oracle instance started
+
+Total System Global Area    1493168352 bytes
+
+Fixed Size                     8896736 bytes
+Variable Size                369098752 bytes
+Database Buffers            1107296256 bytes
+Redo Buffers                   7876608 bytes
+Automatic instance created
+
+
+List of tablespaces that have been dropped from the target database:
+Tablespace DEMO
+
+Removing automatic instance
+shutting down automatic instance 
+Oracle instance shut down
+Automatic instance removed
+RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-03002: failure of recover command at 12/04/2025 17:45:47
+RMAN-05002: aborting Tablespace Point-in-Time Recovery
+RMAN-05517: tempfile /u01/app/oracle/oradata/PROD/temp01.dbf conflicts with file used by target database
+RMAN-05001: auxiliary file name /u01/app/oracle/oradata/PROD/sysaux01.dbf conflicts with a file used by the target database
+RMAN-05001: auxiliary file name /u01/app/oracle/oradata/PROD/undotbs01.dbf conflicts with a file used by the target database
+RMAN-05001: auxiliary file name /u01/app/oracle/oradata/PROD/system01.dbf conflicts with a file used by the target database
+
+RMAN> exit
+
+
+Recovery Manager complete.
+
+SQL> select name from v$datafile;
+
+NAME
+--------------------------------------------------------------------------------
+/u01/app/oracle/oradata/PROD/system01.dbf
+/u01/app/oracle/oradata/PROD/sysaux01.dbf
+/u01/app/oracle/oradata/PROD/undotbs01.dbf
+/u01/app/oracle/oradata/PROD/users01.dbf
+
+SQL> drop tablespacce demo INCLUDING CONTENTS AND DATAFILES;
+drop tablespacce demo INCLUDING CONTENTS AND DATAFILES
+     *
+ERROR at line 1:
+ORA-00950: invalid DROP option
+
+
+SQL> drop tablespace demo INCLUDING CONTENTS AND DATAFILES;
+drop tablespace demo INCLUDING CONTENTS AND DATAFILES
+*
+ERROR at line 1:
+ORA-00959: tablespace 'DEMO' does not exist
+
+
+SQL> ^[[B^[[A
