@@ -1,0 +1,674 @@
+Terminal 1
+
+[oracle@localhost ~]$ . oraenv
+ORACLE_SID = [oracle] ? prod
+The Oracle base has been set to /u01/app/oracle
+[oracle@localhost ~]$ sqlplus sys as sysdba
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Fri Dec 5 10:34:18 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+Connected to an idle instance.
+
+SQL> select name, flashback_on from v$database;
+select name, flashback_on from v$database
+*
+ERROR at line 1:
+ORA-01034: ORACLE not available
+Process ID: 0
+Session ID: 0 Serial number: 0
+
+
+SQL> startup
+ORACLE instance started.
+
+Total System Global Area 1493168352 bytes
+Fixed Size		    8896736 bytes
+Variable Size		  905969664 bytes
+Database Buffers	  570425344 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+Database opened.
+SQL> select name, flashback_on from v$database;
+
+NAME	  FLASHBACK_ON
+--------- ------------------
+PROD	  YES
+
+SQL> conn Demo4/dm 
+Connected.
+SQL> ll
+SP2-0042: unknown command "ll" - rest of line ignored.
+SQL> select * from tab;
+
+TNAME
+--------------------------------------------------------------------------------
+TABTYPE        CLUSTERID
+------------- ----------
+BLOOD_GROUP_RECODS
+TABLE
+
+
+SQL> drop table BLOOD_GROUP_RECODS;
+
+Table dropped.
+
+SQL> conn sys as sysdba
+Enter password: 
+Connected.
+SQL> drop user Demo4
+  2  ;
+
+User dropped.
+
+SQL> create user Demo_user identified by du; 
+
+User created.
+
+SQL> grant create session,create table to Demo_user;
+
+Grant succeeded.
+
+SQL> create role Demo_roll;
+
+Role created.
+
+SQL> grant select , insert ,update, delete on Demo_roll;
+grant select , insert ,update, delete on Demo_roll
+                                                 *
+ERROR at line 1:
+ORA-00905: missing keyword
+
+
+SQL> grant select , insert ,update, delete on Demo_user.patient_bloob_group_record to Demo_roll;
+
+Grant succeeded.
+
+SQL> alter user Demo_user quota 150m on users;
+
+User altered.
+
+SQL> grant select , insert ,update, delete on Demo_user.patient_bloob_group_record to Demo_roll;
+
+Grant succeeded.
+
+SQL> alter user Demo_user quota 150m on users;
+
+User altered.
+
+SQL>  grant select , insert ,update, delete on Demo_user.patient_blood_group_record to Demo_roll;
+
+Grant succeeded.
+
+SQL> SELECT CURRENT_SCN FROM V$DATABASE;
+
+CURRENT_SCN
+-----------
+    3688387
+
+SQL> SELECT CURRENT_SCN FROM V$DATABASE;
+
+CURRENT_SCN
+-----------
+    3688390
+
+SQL> shutdown immediate;
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+SQL> startup mount;
+ORACLE instance started.
+
+Total System Global Area 1493168352 bytes
+Fixed Size		    8896736 bytes
+Variable Size		  905969664 bytes
+Database Buffers	  570425344 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+SQL> SELECT CURRENT_SCN FROM V$DATABASE;
+
+CURRENT_SCN
+-----------
+	  0
+
+SQL> FLASHBACK DATABASE TO SCN 3688391;
+
+Flashback complete.
+
+SQL> alter database open;
+alter database open
+*
+ERROR at line 1:
+ORA-01589: must use RESETLOGS or NORESETLOGS option for database open
+
+
+SQL> alter database open resetlogs;
+
+Database altered.
+
+SQL>  shutdown immediate;
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+SQL> startup mount;
+ORACLE instance started.
+
+Total System Global Area 1493168352 bytes
+Fixed Size		    8896736 bytes
+Variable Size		  905969664 bytes
+Database Buffers	  570425344 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+SQL> alter database open;                         
+
+Database altered.
+
+SQL> shutdown immediate;
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+SQL> startup mount;
+ORACLE instance started.
+
+Total System Global Area 1493168352 bytes
+Fixed Size		    8896736 bytes
+Variable Size		  905969664 bytes
+Database Buffers	  570425344 bytes
+Redo Buffers		    7876608 bytes
+Database mounted.
+SQL> FLASHBACK DATABASE TO TIMESTAMP TO_TIMESTAMP('2025-12-05:12:24:35','YYYY-MM-DD HH24:MI:SS');
+
+Flashback complete.
+
+SQL> alter database open;
+alter database open
+*
+ERROR at line 1:
+ORA-01589: must use RESETLOGS or NORESETLOGS option for database open
+
+
+SQL> alter database open resetlogs;
+
+Database altered.
+
+SQL> 
+
+Terminal 2
+[oracle@localhost ~]$ sqlplus Demo_user
+bash: sqlplus: command not found...
+[oracle@localhost ~]$ , oraenv
+bash: ,: command not found...
+[oracle@localhost ~]$ . oraenv
+ORACLE_SID = [oracle] ? prod
+The Oracle base has been set to /u01/app/oracle
+[oracle@localhost ~]$ sqlplus Demo_user
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Fri Dec 5 10:48:22 2025
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter password: 
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> create table patient_bloob_group_record(
+  2  patient_id number primary key,
+  3  age int,
+  4  gender char,
+  5  blood_group varchar2(5) not null,
+  6  contact_number varchar2(10),
+  7  address varchar(255));
+
+Table created.
+
+SQL> insert into patient_bloob_group_record(patient_id,age,gender,blood_group,contact_number,address) values (1,'Amit Das','M','-O','9123769866','25,Park side road kolakata-200026');
+insert into patient_bloob_group_record(patient_id,age,gender,blood_group,contact_number,address) values (1,'Amit Das','M','-O','9123769866','25,Park side road kolakata-200026')
+                                                                                                           *
+ERROR at line 1:
+ORA-01950: no privileges on tablespace 'USERS'
+
+
+SQL> insert into patient_bloob_group_record(patient_id,age,gender,blood_group,contact_number,address) values (1,'Amit Das','M','-O','9123769866','25,Park side road kolakata-200026');
+insert into patient_bloob_group_record(patient_id,age,gender,blood_group,contact_number,address) values (1,'Amit Das','M','-O','9123769866','25,Park side road kolakata-200026')
+                                                                                                           *
+ERROR at line 1:
+ORA-01950: no privileges on tablespace 'USERS'
+
+
+SQL> insert into patient_bloob_group_record(patient_id,age,gender,blood_group,contact_number,address) values (1,'Amit Das','M','-O','9123769866','25,Park side road kolakata-200026');
+insert into patient_bloob_group_record(patient_id,age,gender,blood_group,contact_number,address) values (1,'Amit Das','M','-O','9123769866','25,Park side road kolakata-200026')
+                                                                                                           *
+ERROR at line 1:
+ORA-01722: invalid number
+
+
+SQL> drop table patient_bloob_group_record;
+
+Table dropped.
+
+SQL> create table patient_bloob_group_record{
+  2  patient_id number primary key,
+  3  patient_name varchar2(70),
+  4  age int,
+  5  gender char,
+  6  blood_group varchar2(5) not null,
+  7  phoneNo int,
+  8  address varchar(255));
+create table patient_bloob_group_record{
+                                       *
+ERROR at line 1:
+ORA-00922: missing or invalid option
+
+
+SQL> create table patient_bloob_group_record(
+  2  patient_id number primary key,
+  3  patient_name varchar2(70), 
+  4  age int,
+  5  gender char,
+  6  blood_group varchar2(5) not null,
+  7  phoneNo int,
+  8  address varchar(255));
+
+Table created.
+
+SQL> insert into patient_bloob_group_record(patient_id,age,gender,blood_group,contact_number,address) values (1,'Amit Das','M','-O',9123769866,'25,Park side road kolakata-200026');  
+insert into patient_bloob_group_record(patient_id,age,gender,blood_group,contact_number,address) values (1,'Amit Das','M','-O',9123769866,'25,Park side road kolakata-200026')
+                                                                         *
+ERROR at line 1:
+ORA-00904: "CONTACT_NUMBER": invalid identifier
+
+
+SQL> insert into patient_bloob_group_record(patient_id,age,gender,blood_group, phoneNo, address) values (1,'Amit Das','M','-O',9123769866,'25,Park side road kolakata-200026');
+insert into patient_bloob_group_record(patient_id,age,gender,blood_group, phoneNo, address) values (1,'Amit Das','M','-O',9123769866,'25,Park side road kolakata-200026')
+                                                                                                      *
+ERROR at line 1:
+ORA-01722: invalid number
+
+
+SQL> alter table patient_bloob_group_record modify phoneNo varchar2(15);
+
+Table altered.
+
+SQL> INSERT ALL
+    INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address)
+    VALUES (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata')
+    
+    INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address)
+    VALUES (2, 'Rina Shah', 28, 'F', 'A+', '9876543210', 'Delhi')
+
+    INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address)
+    VALUES (3, 'Rahul Sen', 35, 'M', 'B-', '9988776655', 'Mumbai')  2    3    4  SQL> SP2-0734: unknown command beginning "INTO patie..." - rest of line ignored.
+SQL> SP2-0734: unknown command beginning "VALUES (2,..." - rest of line ignored.
+SQL> SQL> SP2-0734: unknown command beginning "INTO patie..." - rest of line ignored.
+SQL> INSERT ALL
+    INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address)
+    VALUES (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata')
+    INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address)
+    VALUES (2, 'Rina Shah', 28, 'F', 'A+', '9876543210', 'Delhi')
+    INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address)
+    VALUES (3, 'Rahul Sen', 35, 'M', 'B-', '9988776655', 'Mumbai')
+SELECT * FROM dual;
+SP2-0734: unknown command beginning "VALUES (3,..." - rest of line ignored.
+SP2-0044: For a list of known commands enter HELP
+and to leave enter EXIT.
+SQL> SP2-0734: unknown command beginning "INTO patie..." - rest of line ignored.
+SQL> SP2-0734: unknown command beginning "VALUES (1,..." - rest of line ignored.
+SQL> SP2-0734: unknown command beginning "INTO patie..." - rest of line ignored.
+SQL> SP2-0734: unknown command beginning "VALUES (2,..." - rest of line ignored.
+SP2-0044: For a list of known commands enter HELP
+and to leave enter EXIT.
+SQL> SP2-0734: unknown command beginning "INTO patie..." - rest of line ignored.
+SQL> SP2-0734: unknown command beginning "VALUES (3,..." - rest of line ignored.
+SQL> 
+D
+-
+X
+
+SQL> INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address)
+    VALUES (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata')SP2-0734: unknown command beginning "INTO patie..." - rest of line ignored.
+SQL> insert into patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address) values VALUES (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+SP2-0734: unknown command beginning "VALUES (1,..." - rest of line ignored.
+SQL> INSERT INTO patient_bloob_group_record
+(patient_id, patient_name, age, gender, blood_group, phoneNo, address)
+VALUES (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+  2    3  
+1 row created.
+
+SQL> INSERT INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (2, 'Rina Shah', 28, 'F', 'A+', '9876543210', 'Delhi');
+
+1 row created.
+
+SQL> INSERT INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (3, 'Rahul Sen', 35, 'M', 'B-', '9988776655', 'Mumbai');
+
+1 row created.
+
+SQL>  INSERT INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (4, 'Priya Das', 22, 'F', 'AB+', '9001122334', 'Chennai');
+
+1 row created.
+
+SQL> INSERT INTO patient_bloob_group_record (patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (5, 'Sourav Mukherjee', 40, 'M', 'O+', '9123456780', 'Pune');
+
+1 row created.
+
+SQL> drop table patient_bloob_group_record;
+
+Table dropped.
+
+SQL> show recyclebin;
+ORIGINAL NAME	 RECYCLEBIN NAME		OBJECT TYPE  DROP TIME
+---------------- ------------------------------ ------------ -------------------
+PATIENT_BLOOB_GR BIN$RS7bAqKCE4HgYwEAAH+WWA==$0 TABLE	     2025-12-05:11:28:48
+OUP_RECORD
+PATIENT_BLOOB_GR BIN$RS7bAqJ+E4HgYwEAAH+WWA==$0 TABLE	     2025-12-05:11:08:30
+OUP_RECORD
+SQL> flaskback table BIN$RS7bAqKCE4HgYwEAAH+WWA==$0 before drop;
+SP2-0734: unknown command beginning "flaskback ..." - rest of line ignored.
+SQL> FLASHBACK TABLE BIN$RS7bAqJ+E4HgYwEAAH+WWA==$0 TO BEFORE DROP;
+FLASHBACK TABLE BIN$RS7bAqJ+E4HgYwEAAH+WWA==$0 TO BEFORE DROP
+                            *
+ERROR at line 1:
+ORA-00905: missing keyword
+
+
+SQL> FLASHBACK TABLE "BIN$RS7bAqJ+E4HgYwEAAH+WWA==$0" TO BEFORE DROP;
+
+Flashback complete.
+
+SQL> SELECT * FROM PATIENT_BLOOB_GROUP_RECORD;
+
+no rows selected
+
+SQL> create table patient_bloob_group_record1(patient_id number primary key,patient_name varchar2(70),age int,gender char,blood_group varchar2(5) not null,phoneNo int,address varchar(255));
+
+Table created.
+
+SQL> INSERT INTO patient_bloob_group_record1(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values values VALUES (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+INSERT INTO patient_bloob_group_record1(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values values VALUES (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata')
+                                                                                                                     *
+ERROR at line 1:
+ORA-00936: missing expression
+
+
+SQL> INTO patient_bloob_group_record1(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+SP2-0734: unknown command beginning "INTO patie..." - rest of line ignored.
+SQL> create table patient_blood_group_record(patient_id number primary key,patient_name varchar2(70),age int,gender char,blood_group varchar2(5) not null,phoneNo int,address varchar(255));             
+
+Table created.
+
+SQL> insert into table patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+insert into table patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata')
+            *
+ERROR at line 1:
+ORA-00903: invalid table name
+
+
+SQL> insert into table patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+insert into table patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata')
+            *
+ERROR at line 1:
+ORA-00903: invalid table name
+
+
+SQL> insert into patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+
+1 row created.
+
+SQL> insert into patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (2, 'Rina Shah', 28, 'F', 'A+', '9876543210', 'Delhi');
+
+1 row created.
+
+SQL> commit
+  2  ;
+
+Commit complete.
+
+SQL> drop table patient_blood_group_record;
+
+Table dropped.
+
+SQL> select * from patient_blood_group_record;
+select * from patient_blood_group_record
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> SHOW RECYCLEBIN;
+ORIGINAL NAME	 RECYCLEBIN NAME		OBJECT TYPE  DROP TIME
+---------------- ------------------------------ ------------ -------------------
+PATIENT_BLOOB_GR BIN$RS7bAqKCE4HgYwEAAH+WWA==$0 TABLE	     2025-12-05:11:28:48
+OUP_RECORD
+PATIENT_BLOOD_GR BIN$RS7bAqKGE4HgYwEAAH+WWA==$0 TABLE	     2025-12-05:11:51:20
+OUP_RECORD
+SQL> PURGE RECYCLEBIN;
+
+Recyclebin purged.
+
+SQL>  SHOW RECYCLEBIN;
+SQL>  create table patient_blood_group_record(patient_id number primary key,patient_name varchar2(70),age int,gender char,blood_group varchar2(5) not null,phoneNo int,address varchar(255));
+
+Table created.
+
+SQL> nsert into patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+SP2-0734: unknown command beginning "nsert into..." - rest of line ignored.
+SQL> insert into patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+
+1 row created.
+
+SQL> insert into patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (2, 'Rina Shah', 28, 'F', 'A+', '9876543210', 'Delhi');
+
+1 row created.
+
+SQL> show recyclebin;
+SQL> commit;
+
+Commit complete.
+
+SQL> drop table patient_blood_group_record;
+
+Table dropped.
+
+SQL> show recyclebin;
+ORIGINAL NAME	 RECYCLEBIN NAME		OBJECT TYPE  DROP TIME
+---------------- ------------------------------ ------------ -------------------
+PATIENT_BLOOD_GR BIN$RS7bAqKKE4HgYwEAAH+WWA==$0 TABLE	     2025-12-05:11:57:10
+OUP_RECORD
+SQL> flaskblack table 'BIN$RS7bAqKKE4HgYwEAAH+WWA==$0' to before drop;
+SP2-0734: unknown command beginning "flaskblack..." - rest of line ignored.
+SQL> flaskback table 'BIN$RS7bAqKKE4HgYwEAAH+WWA==$0' to before drop;
+SP2-0734: unknown command beginning "flaskback ..." - rest of line ignored.
+SQL> flashback table 'BIN$RS7bAqKKE4HgYwEAAH+WWA==$0' to before drop;
+flashback table 'BIN$RS7bAqKKE4HgYwEAAH+WWA==$0' to before drop
+                *
+ERROR at line 1:
+ORA-00903: invalid table name
+
+
+SQL> flaskback table "BIN$RS7bAqKKE4HgYwEAAH+WWA==$0" to before drop;
+SP2-0734: unknown command beginning "flaskback ..." - rest of line ignored.
+SQL> FLASHBACK TABLE "BIN$RS7bAqKKE4HgYwEAAH+WWA==$0" TO BEFORE DROP;
+
+Flashback complete.
+
+SQL> select * from table patient_blood_group_record;
+select * from table patient_blood_group_record
+                    *
+ERROR at line 1:
+ORA-00906: missing left parenthesis
+
+
+SQL> select * from patient_blood_group_record;
+
+PATIENT_ID
+----------
+PATIENT_NAME
+----------------------------------------------------------------------
+       AGE G BLOOD    PHONENO
+---------- - ----- ----------
+ADDRESS
+--------------------------------------------------------------------------------
+	 1
+Amit Das
+	30 M O-    9123769866
+Kolkata
+
+
+PATIENT_ID
+----------
+PATIENT_NAME
+----------------------------------------------------------------------
+       AGE G BLOOD    PHONENO
+---------- - ----- ----------
+ADDRESS
+--------------------------------------------------------------------------------
+	 2
+Rina Shah
+	28 F A+    9876543210
+Delhi
+
+
+SQL> show recyclebin;
+SQL> 
+SQL> SHOW RECYCLEBIN;
+SQL> SELECT CURRENT_SCN FROM V$DATABASE;
+SELECT CURRENT_SCN FROM V$DATABASE
+                        *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> SELECT SYSTIMESTAMP FROM dual;
+
+SYSTIMESTAMP
+---------------------------------------------------------------------------
+05-DEC-25 12.10.40.158091 PM +05:30
+
+SQL> commit     
+  2  ;
+
+Commit complete.
+
+SQL> drop table from patient_blood_group_record
+  2  ;
+drop table from patient_blood_group_record
+           *
+ERROR at line 1:
+ORA-00903: invalid table name
+
+
+SQL> drop table patient_blood_group_record;
+
+Table dropped.
+
+SQL> select * from patient_blood_group_record;
+select * from patient_blood_group_record
+           *
+ERROR at line 1:
+ORA-03135: connection lost contact
+Process ID: 4993
+Session ID: 86 Serial number: 61291
+
+
+SQL> SHOW RECYCLEBIN;
+ERROR:
+ORA-03114: not connected to ORACLE
+
+
+SQL> conn Demo_user/du
+ERROR:
+ORA-01033: ORACLE initialization or shutdown in progress
+Process ID: 0
+Session ID: 0 Serial number: 0
+
+
+SQL> SHOW RECYCLEBIN;
+SP2-0640: Not connected
+SP2-0641: "SHOW RECYCLEBIN" requires connection to server
+SQL> conn demo_user/du
+Connected.
+SQL> show RECYCLEBIN;
+SQL> create table patient_bloob_group_record1(patient_id number primary key,patient_name varchar2(70),age int,gender char,blood_group varchar2(5) not null,phoneNo int,address varchar(255));
+create table patient_bloob_group_record1(patient_id number primary key,patient_name varchar2(70),age int,gender char,blood_group varchar2(5) not null,phoneNo int,address varchar(255))
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> select * from patient_bloob_group_record1;
+
+no rows selected
+
+SQL> drop table  patient_bloob_group_record1;
+
+Table dropped.
+
+SQL> show RECYCLEBIN;
+ORIGINAL NAME	 RECYCLEBIN NAME		OBJECT TYPE  DROP TIME
+---------------- ------------------------------ ------------ -------------------
+PATIENT_BLOOB_GR BIN$RS/jESogK9TgYwEAAH9beA==$0 TABLE	     2025-12-05:12:22:20
+OUP_RECORD1
+SQL> create table patient_blood_group_record(patient_id number primary key,patient_name varchar2(70),age int,gender char,blood_group varchar2(5) not null,phoneNo int,address varchar(255));
+create table patient_blood_group_record(patient_id number primary key,patient_name varchar2(70),age int,gender char,blood_group varchar2(5) not null,phoneNo int,address varchar(255))
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> desc patient_blood_group_record
+ Name					   Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PATIENT_ID				   NOT NULL NUMBER
+ PATIENT_NAME					    VARCHAR2(70)
+ AGE						    NUMBER(38)
+ GENDER 					    CHAR(1)
+ BLOOD_GROUP				   NOT NULL VARCHAR2(5)
+ PHONENO					    NUMBER(38)
+ ADDRESS					    VARCHAR2(255)
+
+SQL> insert into patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata');
+insert into patient_blood_group_record(patient_id, patient_name, age, gender, blood_group, phoneNo, address) values (1, 'Amit Das', 30, 'M', 'O-', '9123769866', 'Kolkata')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (DEMO_USER.BIN$RS7bAqKIE4HgYwEAAH+WWA==$0)
+violated
+
+
+SQL> drop table patient_blood_group_record;
+
+Table dropped.
+
+SQL> show RECYCLEBIN;
+ORIGINAL NAME	 RECYCLEBIN NAME		OBJECT TYPE  DROP TIME
+---------------- ------------------------------ ------------ -------------------
+PATIENT_BLOOB_GR BIN$RS/jESogK9TgYwEAAH9beA==$0 TABLE	     2025-12-05:12:22:20
+OUP_RECORD1
+PATIENT_BLOOD_GR BIN$RS/jESokK9TgYwEAAH9beA==$0 TABLE	     2025-12-05:12:24:35
+OUP_RECORD
+SQL> desc show RECYCLEBIN;
+Usage: DESCRIBE [schema.]object[@db_link]
+SQL> desc patient_blood_group_record;
+ERROR:
+ORA-04043: object patient_blood_group_record does not exist
+
+
+SQL> desc patient_blood_group_record;
+ERROR:
+ORA-03135: connection lost contact
+Process ID: 11220
+Session ID: 70 Serial number: 12391
+
+
+SQL> conn Demo_user/du
+Connected.
+SQL> desc patient_blood_group_record;
+ERROR:
+ORA-04043: object patient_blood_group_record does not exist
+
+
+SQL> 
